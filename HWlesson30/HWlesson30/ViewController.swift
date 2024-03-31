@@ -19,7 +19,6 @@ class ViewController: UIViewController {
     
     var scoreLabel: UILabel = {
         let label = UILabel()
-       // label.text = "Score points: "
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -27,7 +26,6 @@ class ViewController: UIViewController {
     
     var levelLabel: UILabel = {
         let label = UILabel()
-     //   label.text = "Level: "
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -51,6 +49,7 @@ class ViewController: UIViewController {
     
     var game = Game()
     var score = 0
+    var level = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,8 +57,9 @@ class ViewController: UIViewController {
         setupButton()
         setupLabels()
         
-        levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
         score = UserDefaults.standard.integer(forKey: "score")
+        level =  UserDefaults.standard.integer(forKey: "level")
+        levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
         scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "0")"
     }
     
@@ -120,7 +120,10 @@ class ViewController: UIViewController {
                 UserDefaults.standard.set(score, forKey: "score")
                 scoreLabel.text = "Score points: \(score)"
             }
-            levelLabel.text = "Level: \(score / 2)"
+            level = score / 2
+            UserDefaults.standard.set(level, forKey: "level")
+            levelLabel.text = "Level: \(level)"
+        
             let levelText = levelLabel.text
             UserDefaults.standard.set(levelText, forKey: "levelLabel")
         }

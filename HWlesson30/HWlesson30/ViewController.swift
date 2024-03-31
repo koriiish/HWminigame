@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     var startGameButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemBlue
@@ -57,10 +57,16 @@ class ViewController: UIViewController {
         setupButton()
         setupLabels()
         
-        score = UserDefaults.standard.integer(forKey: "score")
-        level =  UserDefaults.standard.integer(forKey: "level")
-        levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
-        scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "0")"
+        //  score = UserDefaults.standard.integer(forKey: "score")
+        //  level =  UserDefaults.standard.integer(forKey: "level")
+        //  levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
+        //  scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "0")"
+        
+        score = SettingsManager.score
+        level = SettingsManager.level
+        scoreLabel.text = "\(SettingsManager.scoreLabel)"
+        levelLabel.text = "\(SettingsManager.levelLabel)"
+        
     }
     
     func setupLabels() {
@@ -88,18 +94,18 @@ class ViewController: UIViewController {
     
     func setupButton() {
         view.addSubview(startGameButton)
-       
+        
         NSLayoutConstraint.activate([
             startGameButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 700),
             startGameButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             startGameButton.widthAnchor.constraint(equalToConstant: 150),
             startGameButton.heightAnchor.constraint(equalToConstant: 40)
-            ])
+        ])
         
         
         startGameButton.addTarget(self, action: #selector(startGame), for: .touchUpInside)
     }
-
+    
     @objc func startGame() {
         showAlert()
     }
@@ -113,17 +119,18 @@ class ViewController: UIViewController {
         
         let okAction = UIAlertAction(title: "OK", style: .default) { [self]_ in
             resultLabel.text = String(self.game.isRight(answer: self.game.answer))
-            let scoreText = scoreLabel.text
-            UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
+            //        let scoreText = scoreLabel.text
+            //        UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
             if resultLabel.text == "true" {
                 score += 1
-                UserDefaults.standard.set(score, forKey: "score")
+                //    UserDefaults.standard.set(score, forKey: "score")
+                //    scoreLabel.text = "Score points: \(score)"
+                
                 scoreLabel.text = "Score points: \(score)"
+                level = score / 2
+                // UserDefaults.standard.set(level, forKey: "level")
+                levelLabel.text = "Level: \(level)"
             }
-            level = score / 2
-            UserDefaults.standard.set(level, forKey: "level")
-            levelLabel.text = "Level: \(level)"
-        
             let levelText = levelLabel.text
             UserDefaults.standard.set(levelText, forKey: "levelLabel")
         }

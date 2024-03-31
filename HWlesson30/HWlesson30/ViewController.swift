@@ -59,8 +59,8 @@ class ViewController: UIViewController {
         setupLabels()
         
         levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
+        score = UserDefaults.standard.integer(forKey: "score")
         scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "0")"
-     
     }
     
     func setupLabels() {
@@ -117,6 +117,7 @@ class ViewController: UIViewController {
             UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
             if resultLabel.text == "true" {
                 score += 1
+                UserDefaults.standard.set(score, forKey: "score")
                 scoreLabel.text = "Score points: \(score)"
             }
             levelLabel.text = "Level: \(score / 2)"

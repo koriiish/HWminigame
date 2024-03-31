@@ -58,8 +58,8 @@ class ViewController: UIViewController {
         setupButton()
         setupLabels()
         
-        levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "")"
-        scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "")"
+        levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
+        scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "0")"
      
     }
     
@@ -113,11 +113,11 @@ class ViewController: UIViewController {
         
         let okAction = UIAlertAction(title: "OK", style: .default) { [self]_ in
             resultLabel.text = String(self.game.isRight(answer: self.game.answer))
+            let scoreText = scoreLabel.text
+            UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
             if resultLabel.text == "true" {
                 score += 1
                 scoreLabel.text = "Score points: \(score)"
-                let scoreText = scoreLabel.text
-                UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
             }
             levelLabel.text = "Level: \(score / 2)"
             let levelText = levelLabel.text

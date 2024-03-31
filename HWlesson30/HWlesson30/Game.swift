@@ -17,7 +17,7 @@ class Game {
     }
     
     func generateSecretNumber() {
-        secretNumber = Int.random(in: 1...10)
+        secretNumber = Int.random(in: 1...2)
     }
     
     func isRight(answer: Int) -> Bool {

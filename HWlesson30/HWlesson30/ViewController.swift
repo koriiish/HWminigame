@@ -12,15 +12,14 @@ class ViewController: UIViewController {
     var startGameButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemBlue
-        button.setTitle("Начать игру", for: .normal)
-        button.frame = CGRect(x: 0, y: 0, width: 150, height: 40)
+        button.setTitle("Start game", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     var scoreLabel: UILabel = {
         let label = UILabel()
-        label.text = "Количество очков: "
-        label.backgroundColor = .systemBlue
+       // label.text = "Score points: "
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -28,38 +27,76 @@ class ViewController: UIViewController {
     
     var levelLabel: UILabel = {
         let label = UILabel()
-        label.text = "Уровень: "
-        label.backgroundColor = .systemBlue
+     //   label.text = "Level: "
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    var gameLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Mini game: guess a number from 1 fo 3"
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    var resultLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     var game = Game()
+    var score = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBlue
         setupButton()
         setupLabels()
+        
+        levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "")"
+        scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "")"
+     
     }
     
     func setupLabels() {
         view.addSubview(scoreLabel)
         view.addSubview(levelLabel)
+        view.addSubview(gameLabel)
+        view.addSubview(resultLabel)
+        
         NSLayoutConstraint.activate([
             scoreLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            scoreLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 200),
+            scoreLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 220),
             scoreLabel.heightAnchor.constraint(equalToConstant: 40),
             
             levelLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             levelLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            levelLabel.heightAnchor.constraint(equalToConstant: 40)
+            levelLabel.heightAnchor.constraint(equalToConstant: 40),
+            
+            gameLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
+            gameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            resultLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 550),
+            resultLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
     func setupButton() {
         view.addSubview(startGameButton)
-        startGameButton.center = view.center
+       
+        NSLayoutConstraint.activate([
+            startGameButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 700),
+            startGameButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            startGameButton.widthAnchor.constraint(equalToConstant: 150),
+            startGameButton.heightAnchor.constraint(equalToConstant: 40)
+            ])
+        
+        
         startGameButton.addTarget(self, action: #selector(startGame), for: .touchUpInside)
     }
 
@@ -68,14 +105,23 @@ class ViewController: UIViewController {
     }
     
     func showAlert() {
-        let alertController = UIAlertController(title: "Мини игра", message: "Угадай число от 1 до 10", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Mini game", message: "Guess a number from 1 fo 3", preferredStyle: .alert)
         
         alertController.addTextField { textField in
             textField.delegate = self
         }
         
-        let okAction = UIAlertAction(title: "OK", style: .default) {_ in
-            print(self.game.isRight(answer: self.game.answer))
+        let okAction = UIAlertAction(title: "OK", style: .default) { [self]_ in
+            resultLabel.text = String(self.game.isRight(answer: self.game.answer))
+            if resultLabel.text == "true" {
+                score += 1
+                scoreLabel.text = "Score points: \(score)"
+                let scoreText = scoreLabel.text
+                UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
+            }
+            levelLabel.text = "Level: \(score / 2)"
+            let levelText = levelLabel.text
+            UserDefaults.standard.set(levelText, forKey: "levelLabel")
         }
         alertController.addAction(okAction)
         
@@ -86,7 +132,6 @@ class ViewController: UIViewController {
             self.game.generateSecretNumber()
         }
     }
-
 }
 
 extension ViewController: UITextFieldDelegate {

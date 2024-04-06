@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     
     var gameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Mini game: guess a number from 1 fo 3"
+        label.text = "Mini game: guess a number from 1 fo 10"
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -56,11 +56,6 @@ class ViewController: UIViewController {
         view.backgroundColor = .systemBlue
         setupButton()
         setupLabels()
-        
-        //  score = UserDefaults.standard.integer(forKey: "score")
-        //  level =  UserDefaults.standard.integer(forKey: "level")
-        //  levelLabel.text = "\(UserDefaults.standard.string(forKey: "levelLabel") ?? "0")"
-        //  scoreLabel.text = "\(UserDefaults.standard.string(forKey: "scoreLabel") ?? "0")"
         
         score = SettingsManager.score
         level = SettingsManager.level
@@ -111,7 +106,7 @@ class ViewController: UIViewController {
     }
     
     func showAlert() {
-        let alertController = UIAlertController(title: "Mini game", message: "Guess a number from 1 fo 3", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Mini game", message: "Guess a number from 1 fo 10", preferredStyle: .alert)
         
         alertController.addTextField { textField in
             textField.delegate = self
@@ -119,20 +114,18 @@ class ViewController: UIViewController {
         
         let okAction = UIAlertAction(title: "OK", style: .default) { [self]_ in
             resultLabel.text = String(self.game.isRight(answer: self.game.answer))
-            //        let scoreText = scoreLabel.text
-            //        UserDefaults.standard.set(scoreText, forKey: "scoreLabel")
+            let scoreText = scoreLabel.text ?? ""
+            SettingsManager.scoreLabel = scoreText
             if resultLabel.text == "true" {
                 score += 1
-                //    UserDefaults.standard.set(score, forKey: "score")
-                //    scoreLabel.text = "Score points: \(score)"
-                
+                SettingsManager.score = score
                 scoreLabel.text = "Score points: \(score)"
                 level = score / 2
-                // UserDefaults.standard.set(level, forKey: "level")
+                SettingsManager.level = level
                 levelLabel.text = "Level: \(level)"
             }
-            let levelText = levelLabel.text
-            UserDefaults.standard.set(levelText, forKey: "levelLabel")
+            let levelText = levelLabel.text ?? ""
+            SettingsManager.levelLabel = levelText
         }
         alertController.addAction(okAction)
         
